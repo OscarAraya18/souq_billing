@@ -1,20 +1,38 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import BillView from '../views/BillView.vue';
+import TopNavigationBarView from '../views/TopNavigationBarView.vue';
+import ProductGeneralSearchView from '../views/ProductGeneralSearchView.vue';
+import ProductReplacementView from '../views/ProductReplacementView.vue';
+import ProductManagementView from '../views/ProductManagementView.vue';
+import AgentAccessCredentialView from '../views/AgentAccessCredentialView.vue';
+import LocalityExpenseView from '../views/LocalityExpenseView.vue';
+
+//import PageNotFoundView from '../views/PageNotFoundView.vue';
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'topNavigationBarView',
+    component: TopNavigationBarView,
+    children: 
+    [
+      {path: '/', component: BillView},
+      {path: '/bill', component: BillView},
+      {path: '/productGeneralSearch', component: ProductGeneralSearchView},
+      {path: '/productReplacement', component: ProductReplacementView},
+      {path: '/productManagement', component: ProductManagementView},
+      {path: '/agentAccessCredential', component: AgentAccessCredentialView},
+      {path: '/localityExpense', component: LocalityExpenseView},
+
+    ]
   },
+  /*
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/:catchAll(.*)',
+    name: 'pageNotFoundView',
+    component: PageNotFoundView
   }
+  */
 ]
 
 const router = createRouter({

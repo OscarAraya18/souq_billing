@@ -1,0 +1,38 @@
+TIEMPO PROMEDIO MOTORIZADOS:
+
+SELECT
+    LocalityAgents.localityAgentName,
+    Localities.localityName,
+    AVG(TIMESTAMPDIFF(MINUTE, STR_TO_DATE(WhatsappInvoices.whatsappInvoiceShippingDateTime, '%a %b %d %Y %T GMT+0000'), STR_TO_DATE(WhatsappInvoices.whatsappInvoiceDeliveredDateTime, '%a %b %d %Y %T GMT+0000'))) AS TiempoPromedioEntrega
+FROM WhatsappInvoices
+LEFT JOIN LocalityAgents ON LocalityAgents.localityAgentID = WhatsappInvoices.whatsappInvoiceLocalityAgentID
+LEFT JOIN Localities ON Localities.localityID = WhatsappInvoices.whatsappInvoiceLocalityID
+WHERE
+    WhatsappInvoices.whatsappInvoiceDeliveredDateTime IS NOT NULL
+    AND WhatsappInvoices.whatsappInvoiceShippingDateTime IS NOT NULL
+    AND STR_TO_DATE(WhatsappInvoices.whatsappInvoiceDeliveredDateTime, '%a %b %d %Y %T GMT+0000') IS NOT NULL
+    AND STR_TO_DATE(WhatsappInvoices.whatsappInvoiceShippingDateTime, '%a %b %d %Y %T GMT+0000') IS NOT NULL
+    AND WhatsappInvoices.whatsappInvoiceLocalityAgentID IS NOT NULL
+    AND LocalityAgents.localityAgentName IS NOT NULL
+GROUP BY WhatsappInvoices.whatsappInvoiceLocalityAgentID
+ORDER BY TiempoPromedioEntrega ASC;
+
+
+
+PRODUCTOS MAS VENDIDOS:
+
+SELECT 
+	jt.descripcion as Producto,
+    COUNT(*) AS Cantidad
+FROM 
+    WhatsappConversations,
+    json_table(WhatsappConversations.whatsappConversationProducts, '$[*]' COLUMNS (
+    	CodigoP VARCHAR(255) PATH '$.CodigoP',
+        descripcion VARCHAR(255) PATH '$.descripcion'
+    )) AS jt
+WHERE WhatsappConversations.whatsappConversationEndDateTime LIKE '%Mar%'
+GROUP BY 
+    CodigoP
+ORDER BY 
+    Cantidad DESC;
+
